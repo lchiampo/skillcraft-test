@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SkillCraft</title>
+  <title>My Projects — Geulvici</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -71,58 +71,24 @@
     }
 
     .main-content {
-      padding: 40px 24px;
+      padding: 48px 24px 80px;
     }
 
-    .hero {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 120px 24px;
+    .page-header {
+      margin-bottom: 48px;
     }
 
-    .hero h1 {
-      font-size: 3rem;
+    .page-header h1 {
+      font-size: 2rem;
       font-weight: 700;
       letter-spacing: -0.02em;
-      margin-bottom: 40px;
     }
 
-    .hero-buttons {
-      display: flex;
-      gap: 16px;
+    .project-section {
+      margin-bottom: 48px;
     }
 
-    .btn {
-      padding: 12px 28px;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      text-decoration: none;
-      transition: opacity 0.15s;
-    }
-
-    .btn:hover { opacity: 0.85; }
-
-    .btn-primary {
-      background: #111;
-      color: #fff;
-    }
-
-    .btn-secondary {
-      background: #f3f3f3;
-      color: #111;
-    }
-
-    .recents {
-      padding: 0 24px 80px;
-    }
-
-    .recents h2 {
+    .project-section h2 {
       font-size: 1.1rem;
       font-weight: 600;
       color: #888;
@@ -257,7 +223,7 @@
 <body>
   <div class="page-wrapper">
     <nav>
-      <a href="#" class="logo">
+      <a href="index.html" class="logo">
         <div class="logo-icon"></div>
         Logo
       </a>
@@ -271,49 +237,80 @@
     </nav>
 
     <main class="main-content">
-      <section class="hero">
-        <h1>Welcome to Geulvici</h1>
-        <div class="hero-buttons">
-          <a href="#" class="btn btn-primary">New Project</a>
-          <a href="#" class="btn btn-secondary">My Projects</a>
-        </div>
-      </section>
-      <section class="recents">
-        <h2>Recents</h2>
+      <div class="page-header">
+        <h1>My Projects</h1>
+      </div>
+
+      <section class="project-section">
+        <h2>Albums</h2>
         <ul class="project-list">
           <li>
             <a href="#">
               <div class="project-icon"></div>
-              Project Alpha
-              <span class="project-meta">Edited 2 hours ago</span>
+              Album One
+              <span class="project-meta">12 songs</span>
             </a>
           </li>
           <li>
             <a href="#">
               <div class="project-icon"></div>
-              Project Beta
-              <span class="project-meta">Edited yesterday</span>
+              Album Two
+              <span class="project-meta">9 songs</span>
             </a>
           </li>
           <li>
             <a href="#">
               <div class="project-icon"></div>
-              Project Gamma
-              <span class="project-meta">Edited 3 days ago</span>
+              Album Three
+              <span class="project-meta">14 songs</span>
             </a>
           </li>
           <li>
             <a href="#">
               <div class="project-icon"></div>
-              Project Delta
-              <span class="project-meta">Edited last week</span>
+              Album Four
+              <span class="project-meta">7 songs</span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="project-section">
+        <h2>Songs</h2>
+        <ul class="project-list">
+          <li>
+            <a href="#">
+              <div class="project-icon"></div>
+              Song One
+              <span class="project-meta">3:24</span>
             </a>
           </li>
           <li>
             <a href="#">
               <div class="project-icon"></div>
-              Project Epsilon
-              <span class="project-meta">Edited 2 weeks ago</span>
+              Song Two
+              <span class="project-meta">4:11</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <div class="project-icon"></div>
+              Song Three
+              <span class="project-meta">2:58</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <div class="project-icon"></div>
+              Song Four
+              <span class="project-meta">5:03</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <div class="project-icon"></div>
+              Song Five
+              <span class="project-meta">3:47</span>
             </a>
           </li>
         </ul>
@@ -325,7 +322,7 @@
     <footer>
       <div class="footer-inner">
         <div class="footer-brand">
-          <a href="#" class="logo">
+          <a href="index.html" class="logo">
             <div class="logo-icon"></div>
             Logo
           </a>
