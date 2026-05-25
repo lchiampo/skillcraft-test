@@ -8,6 +8,7 @@ app = Flask(__name__)
 DB_PATH = "skillcraft.db"
 UPLOAD_DIR = "uploads"
 ALLOWED_EXTENSIONS = {".mp3", ".wav", ".flac", ".aac", ".ogg", ".m4a"}
+FILE_LINK_BASE = "https://s3.placeholder.com/songs/"
 
 
 def get_db():
@@ -35,14 +36,22 @@ def init_db():
                 duration   INTEGER,
                 project    TEXT NOT NULL DEFAULT 'my projects',
                 file_path  TEXT,
+                file_link  TEXT,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         """)
-        # Add file_path column if upgrading from a previous version
         try:
             db.execute("ALTER TABLE songs ADD COLUMN file_path TEXT")
         except sqlite3.OperationalError:
             pass
+        try:
+            db.execute("ALTER TABLE songs ADD COLUMN file_link TEXT")
+        except sqlite3.OperationalError:
+            pass
+        db.execute(
+            "UPDATE songs SET file_link = ? || id || '.mp3' WHERE file_link IS NULL",
+            (FILE_LINK_BASE,),
+        )
         db.commit()
 
 
@@ -71,6 +80,10 @@ def create_song():
         "INSERT INTO songs (title, artist, duration, project) VALUES (?, ?, ?, ?)",
         (title, artist, duration, project),
     )
+    db.execute(
+        "UPDATE songs SET file_link=? WHERE id=?",
+        (f"{FILE_LINK_BASE}{cur.lastrowid}.mp3", cur.lastrowid),
+    )
     db.commit()
     row = db.execute("SELECT * FROM songs WHERE id = ?", (cur.lastrowid,)).fetchone()
     return jsonify(dict(row)), 201
@@ -83,27 +96,6 @@ def get_song(song_id):
         return jsonify({"error": "not found"}), 404
     return jsonify(dict(row))
 
-
-@app.route("/api/songs/<int:song_id>", methods=["PUT"])
-def update_song(song_id):
-    db = get_db()
-    row = db.execute("SELECT * FROM songs WHERE id = ?", (song_id,)).fetchone()
-    if row is None:
-        return jsonify({"error": "not found"}), 404
-
-    data = request.get_json(force=True)
-    title = data.get("title", row["title"]).strip()
-    artist = data.get("artist", row["artist"]).strip()
-    duration = data.get("duration", row["duration"])
-    project = data.get("project", row["project"]).strip()
-
-    db.execute(
-        "UPDATE songs SET title=?, artist=?, duration=?, project=? WHERE id=?",
-        (title, artist, duration, project, song_id),
-    )
-    db.commit()
-    updated = db.execute("SELECT * FROM songs WHERE id = ?", (song_id,)).fetchone()
-    return jsonify(dict(updated))
 
 
 @app.route("/api/songs/<int:song_id>", methods=["DELETE"])

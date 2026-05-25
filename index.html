@@ -216,6 +216,84 @@
 
     .placeholder .big { font-size: 2.5rem; opacity: 0.3; }
     .placeholder p { font-size: 0.9rem; }
+
+    /* Edit-file modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      width: 360px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .modal h3 { font-size: 1rem; font-weight: 600; }
+
+    .wip-notice {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .wip-badge {
+      display: inline-block;
+      background: #4a3800;
+      color: #f5c542;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.4rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.2rem;
+      flex-wrap: wrap;
+    }
+
+    .edit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--surface2);
+      color: var(--text);
+      border: none;
+      border-radius: 6px;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+      width: fit-content;
+    }
+
+    .edit-btn:hover { background: #333; }
   </style>
 </head>
 <body>
@@ -238,8 +316,22 @@
   </main>
 </div>
 
+<div class="modal-overlay" id="editOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <h3>Change File</h3>
+    <div class="wip-notice">
+      <div class="wip-badge">Work in progress</div><br>
+      File storage will be available once AWS S3 integration is set up.
+    </div>
+    <div class="modal-actions">
+      <button class="edit-btn" onclick="closeEditModal()">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
   let activeProject = null;
+  const editOverlay = document.getElementById("editOverlay");
 
   async function loadProjects() {
     const res = await fetch("/api/projects");
@@ -317,18 +409,34 @@
           ${duration ? `<span>${duration}</span><span class="dot">•</span>` : ""}
           <span>${escHtml(song.project)}</span>
         </div>
-        ${song.file_path
-          ? `<a class="download-btn" href="/api/songs/${song.id}/file">
-               <svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                 <path d="M8 1v9M4 7l4 4 4-4M2 14h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-               </svg>
-               Download
-             </a>`
-          : `<span class="no-file">No file attached</span>`
-        }
+        <div class="card-actions">
+          ${song.file_path
+            ? `<a class="download-btn" href="/api/songs/${song.id}/file">
+                 <svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                   <path d="M8 1v9M4 7l4 4 4-4M2 14h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                 </svg>
+                 Download
+               </a>`
+            : `<span class="no-file">No file attached</span>`
+          }
+          <button class="edit-btn">Edit file</button>
+        </div>
       `;
+      card.querySelector(".edit-btn").addEventListener("click", () => openEditModal(song));
       grid.appendChild(card);
     });
+  }
+
+  function openEditModal(song) {
+    editOverlay.style.display = "flex";
+  }
+
+  function closeEditModal() {
+    editOverlay.style.display = "none";
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === editOverlay) closeEditModal();
   }
 
   function escHtml(str) {
