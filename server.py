@@ -97,6 +97,27 @@ def get_song(song_id):
     return jsonify(dict(row))
 
 
+@app.route("/api/songs/<int:song_id>", methods=["PUT"])
+def update_song(song_id):
+    db = get_db()
+    row = db.execute("SELECT * FROM songs WHERE id = ?", (song_id,)).fetchone()
+    if row is None:
+        return jsonify({"error": "not found"}), 404
+
+    data = request.get_json(force=True)
+    title = data.get("title", row["title"]).strip()
+    artist = data.get("artist", row["artist"]).strip()
+    duration = data.get("duration", row["duration"])
+    project = data.get("project", row["project"]).strip()
+
+    db.execute(
+        "UPDATE songs SET title=?, artist=?, duration=?, project=? WHERE id=?",
+        (title, artist, duration, project, song_id),
+    )
+    db.commit()
+    updated = db.execute("SELECT * FROM songs WHERE id = ?", (song_id,)).fetchone()
+    return jsonify(dict(updated))
+
 
 @app.route("/api/songs/<int:song_id>", methods=["DELETE"])
 def delete_song(song_id):
